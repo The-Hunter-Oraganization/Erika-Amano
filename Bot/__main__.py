@@ -6,7 +6,7 @@ encoder.start()
 
 
 try:
-    encoder.send_message(OWNER_ID, text='Bot Started', reply_markup=IKM([[IKB('ᴄʜᴇᴄᴋ sᴛᴀᴛs', 'answer_help'), IKB('ᴅᴇᴠᴇʟᴏᴘᴇʀ', 'answer_about_dev')]]))
+    encoder.send_message(OWNER_ID, text='Bot Started', reply_markup=IKM([[IKB('ʜᴇʟᴘ', 'answer_help'), IKB('ᴅᴇᴠᴇʟᴏᴘᴇʀ', 'answer_about_dev')]]))
 except:
     pass    
 

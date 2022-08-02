@@ -8,19 +8,14 @@ from Bot import encoder, OWNER_ID, LOG, FILES_CHANNEL
 from Bot.utils.progress_pyro import progress_for_pyrogram
 from Bot.utils.ffmpeg import ffmpeg_progress
 
-data = []
+encoder_is_on = []
 flood = []
-async def on_task_complete(id):
-    ok = data_check(id)
-    data.remove(ok)
-    await add_task(ok)
-    flood.remove(id)   
-    return None       
-        
-def data_check(id):
-    for i in data:
-        if id == i.from_user.id: 
-            return i
+
+async def on_task_complete():
+    del encoder_is_on[0]
+    if len(encoder_is_on) > 0:
+        if encoder_is_on[0]:
+            await add_task(encoder_is_on[0])   
         
 async def add_task(message):
     try:
@@ -69,15 +64,11 @@ async def add_task(message):
             LOG.info(f'Error while line 56\n'+e)    
     except Exception as e: 
         LOG.info(f'Error while Line 58\n'+e)
+        
     try:
-        if message.from_user.id in flood:
-            await on_task_complete(message.from_user.id)   
+        await on_task_complete()   
     except Exception as e: 
-        LOG.info(f'Error while task complete\n'+e)
-        try:
-            await on_task_complete(int(message.from_user.id)) 
-        except Exception as e:     
-            LOG.info(f'Error while task complete\n'+e)  
+        LOG.info(f'Error while task complete\n'+e) 
        
 
 
@@ -107,13 +98,11 @@ async def encoder_process(encoder, message):
         text= "You're not authorized to use this bot. Request Admins to approve you."
         await encoder.send_message(message.chat.id, text, reply_markup=IKM([[IKB('ʀᴇǫᴜᴇsᴛ', f'users_request-{message.from_user.id}')]]))
         return
-    id = message.from_user.id
-    flood.append(id)
-    if flood.count(id) <=1:
+    
+    if len(encoder_is_on) <=1:
         await add_task(message)
-        flood.remove(id)
     else:
-        data.append(message) 
+        encoder_is_on.append(message) 
         await message.reply('**Added To Queue**')             
                          
                    
