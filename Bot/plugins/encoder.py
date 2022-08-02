@@ -1,4 +1,3 @@
-from compileall import compile_dir
 import time, os
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
@@ -11,6 +10,7 @@ from Bot.utils.ffmpeg import ffmpeg_progress
 
 data = []
 flood = []
+
 async def on_task_complete(id):
     ok = data_check(id)
     data.remove(ok)
@@ -57,7 +57,7 @@ async def add_task(message):
     except Exception as e: 
         LOG.info(f'Error while Line 58\n'+e)
     try:
-        await on_task_complete(message.from_user.id)  
+        await on_task_complete(int(message.from_user.id))  
         await msg.delete()  
     except Exception as e: 
         LOG.info(f'Error while task complete\n'+e)  
@@ -68,6 +68,7 @@ async def add_task(message):
         os.remove(f'progress-{FT}.txt')
     except Exception as e:
         LOG.info(f'Error while removing files\n'+e)    
+
 
 
 video_mimetype = [
