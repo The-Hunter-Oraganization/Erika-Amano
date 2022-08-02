@@ -5,7 +5,7 @@ Erika Amano (天野 エリカ, Amano Erika) is the main female protagonist of th
 
 </br>
 
-We created this bot for video encoding purpose, of telegram files as telegram offers us cloud storage and still may peoples unable to download all videos due to they using mobile data. As we know mobile data we get is limited. So using this bot user can reduce video size and watch videos in less data.
+We made this bot for video encoding purpose of telegram files because telegram provides us with unlimited cloud storage and people may be unable to download all videos because of using mobile data. As we know that the mobile data that we get is limited. So by using this bot user can reduce the size of the video and watch the video in less data.
 
 ## Features 
 
