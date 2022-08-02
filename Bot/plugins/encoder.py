@@ -1,4 +1,3 @@
-from compileall import compile_dir
 import time, os
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as IKB
@@ -43,7 +42,8 @@ async def add_task(message):
                 LOG.info(f'ERror while ffmpeg progress\n' +e) 
             output = filepath.replace('.mkv', '')
             output = output+'IA.mkv'      
-            try:
+            
+            try: #MSG EDIT AND EDIT
                 await msg.edit(f'**Encoding Completed')   
                 file =  await msg.reply_document(output)  
             except Exception as e: 
@@ -51,23 +51,34 @@ async def add_task(message):
             try:
                 await file.copy(FILES_CHANNEL)
             except Exception as e: 
-                LOG.info(f'Error while file copy\n'+e)  
+                LOG.info(f'Error while file copy\n'+e)
+            
+            try: #FILE DELETE
+                os.remove(filepath)
+                os.remove(output)
+                os.remove(f'progress-{FT}.txt')
+            except Exception as e: 
+                LOG.info(f'Error while removing files\n'+e)  
+           
+            try: #MSG DELETE
+                await msg.delete() 
+            except:
+                pass       
+                       
         except Exception as e: 
             LOG.info(f'Error while line 56\n'+e)    
     except Exception as e: 
         LOG.info(f'Error while Line 58\n'+e)
     try:
-        await on_task_complete(message.from_user.id)  
-        await msg.delete()  
+        if message.from_user.id in flood:
+            await on_task_complete(message.from_user.id)   
     except Exception as e: 
-        LOG.info(f'Error while task complete\n'+e)  
-    
-    try:
-        os.remove(filepath)
-        os.remove(output)
-        os.remove(f'progress-{FT}.txt')
-    except Exception as e:
-        LOG.info(f'Error while removing files\n'+e)    
+        LOG.info(f'Error while task complete\n'+e)
+        try:
+            await on_task_complete(int(message.from_user.id)) 
+        except Exception as e:     
+            LOG.info(f'Error while task complete\n'+e)  
+       
 
 
 video_mimetype = [
