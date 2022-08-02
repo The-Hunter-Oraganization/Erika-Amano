@@ -1,0 +1,50 @@
+{
+    "name": "Video Compressor",
+    "description": "An Simple Telegram Video Encoder Bot.",
+    "keywords": [
+        "telegram-bot",
+        "soheru",
+        ""
+    ],
+    "repository": "https://github.com/soheru/Video-Compressor",
+    "website": "https://teamyokai.tech",
+    "success_url": "https://teamyokai.tech",
+    "env": {
+        "BOT_TOKEN": {
+            "description": "Your Bot Token",
+            "required": "True"
+        },
+        "API_ID": {
+            "description": "Get From my.telegram.org",
+            "required": "True"
+        },
+        "APP_HASH": {
+            "description": "Get From my.telegram.org",
+            "required": "True"
+        },
+        "OWNER_ID": {
+            "description": "Your ID",
+            "required": "True"
+        },
+        "MONGO_DB": {
+            "description": "get from cloud.mongodb.com",
+            "required": "True"
+        },
+        "FILES_CHANNEL": {
+            "description": "your files channel id",
+            "required": "True"
+        }
+    },
+    "stack": "heroku-20",
+    "buildpacks": [
+        {
+            "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+        }
+    ],
+    "formation": {
+        "worker": {
+            "quantity": 1,
+            "size": "free"
+        }
+    }
+}
