@@ -12,7 +12,7 @@ We made this bot for video encoding purpose of telegram files because telegram p
 ```
 [+] Make Sure You Add All These Mandatory Vars. 
     [-] Supports Multiple Users. 
-    [-] Multi Users Queue, Per User 1 Queue.
+    [-] Queue Support.
     [-] Authroize Request and Unauthorize
     [-] Inbuilt Settings Change Option.
     [-] Inbuilt restart command.
