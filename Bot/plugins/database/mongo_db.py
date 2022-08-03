@@ -3,12 +3,12 @@ from pymongo import MongoClient
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
-from Bot import MONGO_DB as DB_URL, TRIGGERS, OWNER_ID
+from Bot import MONGO_DB as DB_URL, BOT_NAME, OWNER_ID
 
 
 cluster = MongoClient(DB_URL)
 db = cluster['Encoding']
-users = db['Bot']
+users = db[BOT_NAME]
                                     
 def check_user_mdb(id):
     got = users.find_one({'user_id':id})
