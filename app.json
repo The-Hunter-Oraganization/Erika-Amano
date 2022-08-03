@@ -1,50 +1,38 @@
 {
-    "name": "Video Compressor",
-    "description": "An Simple Telegram Video Encoder Bot.",
-    "keywords": [
-        "telegram-bot",
-        "soheru",
-        ""
-    ],
+    "name": "Erika Amano",
+    "description": "Simple Telegram Video Encoder Bot.",
     "repository": "https://github.com/The-Hunter-Oraganization/Erika-Amano",
-    "website": "https://teamyokai.tech",
-    "success_url": "https://teamyokai.tech",
-    "env": {
-        "BOT_TOKEN": {
-            "description": "Your Bot Token",
-            "required": "True"
-        },
-        "API_ID": {
-            "description": "Get From my.telegram.org",
-            "required": "True"
-        },
-        "APP_HASH": {
-            "description": "Get From my.telegram.org",
-            "required": "True"
-        },
-        "OWNER_ID": {
-            "description": "Your ID",
-            "required": "True"
-        },
-        "MONGO_DB": {
-            "description": "get from cloud.mongodb.com",
-            "required": "True"
-        },
-        "FILES_CHANNEL": {
-            "description": "your files channel id",
-            "required": "True"
-        }
-    },
-    "stack": "heroku-20",
-    "buildpacks": [
-        {
-            "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
-        }
-    ],
+    "logo": "https://telegra.ph/file/7e3c7f4f70272c6e59c52.jpg",
+    "keywords": ["python", "pyrogram", "telegram", "compressor-bot"],
+    "image": "heroku/python",
     "formation": {
-        "worker": {
-            "quantity": 1,
-            "size": "free"
-        }
+      "worker": {
+        "quantity": 1,
+        "size": "free"
+      }
+    },
+    "env": {
+      "API_ID": {
+        "description": "App API_ID from https://my.telegram.org"
+      },
+      "APP_HASH": {
+        "description": "App APP_HASH from https://my.telegram.org"
+      },
+      "BOT_TOKEN": {
+        "description": "Bot token from https://t.me/BotFather",
+        "required": true
+      },
+      "OWNER_ID": {
+        "description": "Your Telegram ID",
+        "required": true
+      },
+      "MONGO_DB": {
+        "description": "get from cloud.mongodb.com",
+        "required": true
+      },
+      "FILES_CHANNEL": {
+        "description": "Files Channel ID",
+        "required": false
+      }
     }
-}
+  }
