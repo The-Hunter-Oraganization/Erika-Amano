@@ -293,7 +293,7 @@ async def callback_answer(client:Client, callback_query):
             text += "• **480p** - `x265 - CRF - 26, Audio Bitrate - 64k`\n"
             text += "• **720p** - `x265 - CRF - 23, Audio Bitrate - 128k`\n"
             text += "• **1080p** - `x265 - CRF - 24, Audio Bitrate - 256k`\n"   
-            await callback_query.message.edit(text,reply_markup=BUTTONS_AUTO) 
+        await callback_query.message.edit(text,reply_markup=BUTTONS_AUTO) 
     elif 'about_dev' in callback_query.data:
         text = f'Hello `{callback_query.from_user.first_name}`,\n\n'
         text += "I'm Sohail\nTo connect with me, Check Below Buttons"
