@@ -25,7 +25,7 @@ async def add_task(message):
         try:
             filepath = await message.download(progress=progress_for_pyrogram,progress_args=("**Downloading...**", msg, c_time))   
             check_resolution = check_resolution_settings(message.from_user.id)
-            
+            print(check_resolution)
             if check_resolution == 'auto':
                 cmd = ffmpeg_auto_settings(message.from_user.id, filepath, FT)
                 await msg.edit_text('**Encoding...**')

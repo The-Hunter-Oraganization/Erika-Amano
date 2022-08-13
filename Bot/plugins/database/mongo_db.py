@@ -23,7 +23,7 @@ def check_crf_mdb(id):
         return got    
 
 def check_resolution_settings(id):
-    got = users.find_one({'user_id':id})
+    got = users.find_one({'user_id':int(id)})
     if got is not None:
         got = got['resolution']
         return got
