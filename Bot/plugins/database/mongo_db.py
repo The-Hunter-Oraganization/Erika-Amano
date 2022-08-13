@@ -11,13 +11,13 @@ db = cluster['Encoding']
 users = db[BOT_NAME]
                                     
 def check_user_mdb(id):
-    got = users.find_one({'user_id':id})
+    got = users.find_one({'user_id':int(id)})
     if got is not None:
         got = int(got['user_id'])
         return got   
 
 def check_crf_mdb(id):
-    got = users.find_one({'user_id':id})
+    got = users.find_one({'user_id':int(id)})
     if got is not None:
         got = int(got['crf'])
         return got    
@@ -29,45 +29,45 @@ def check_resolution_settings(id):
         return got
     
 def check_preset_settings(id):
-    got = users.find_one({'user_id':id})
+    got = users.find_one({'user_id':int(id)})
     if got is not None:
         got = got['preset']
         return got    
     
 def check_vcodec_settings(id):
-    got = users.find_one({'user_id':id})
+    got = users.find_one({'user_id':int(id)})
     if got is not None:
         got = got['vcodec']
         return got    
     
 def check_audio_type_mdb(id):
-    got = users.find_one({'user_id':id})
+    got = users.find_one({'user_id':int(id)})
     if got is not None:
         got = str(got['audio_type'])
         return got    
     
 def update_resolution_settings(id, new):
-    got = users.update_one({'user_id':id}, {'$set':{'resolution':new}}) 
+    got = users.update_one({'user_id':int(id)}, {'$set':{'resolution':new}}) 
     if got is not None:
         return 'Success' 
 
 def update_preset_settings(id, new):
-    got = users.update_one({'user_id':id}, {'$set':{'preset':new}}) 
+    got = users.update_one({'user_id':int(id)}, {'$set':{'preset':new}}) 
     if got is not None:
         return 'Success' 
 
 def update_vcodec_settings(id, new):
-    got = users.update_one({'user_id':id}, {'$set':{'vcodec':new}}) 
+    got = users.update_one({'user_id':int(id)}, {'$set':{'vcodec':new}}) 
     if got is not None:
         return 'Success'
 
 def update_audio_type_mdb(id, new):
-    got = users.update_one({'user_id':id}, {'$set':{'audio_type':new}}) 
+    got = users.update_one({'user_id':int(id)}, {'$set':{'audio_type':new}}) 
     if got is not None:
         return 'Success'        
     
 def update_crf(id, new):
-    got = users.update_one({'user_id':id}, {'$set':{'crf':new}}) 
+    got = users.update_one({'user_id':int(id)}, {'$set':{'crf':new}}) 
     if got is not None:
         return 'Success' 
     
