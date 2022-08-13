@@ -42,7 +42,7 @@ async def add_task(message):
                     hq = await ffmpeg_progress(cmd[2], filepath,f'progress-{FT}.txt',FT, msg, '**Encoding Started 1080p**\n\n')
                 except Exception as e:
                     LOG.info(f'Error while ffmpeg progress\n' +e)     
-                output = input.rsplit('.',1)[0]
+                output = filepath.rsplit('.',1)[0]
                 try: #MSG EDIT AND EDIT
                     await msg.edit(f'**Encoding Completed')   
                     lq =  await msg.reply_document(output+'480p.mkv', caption='480p')  
@@ -76,7 +76,7 @@ async def add_task(message):
                 except Exception as e:
                     LOG.info(f'ERror while ffmpeg progress\n' +e) 
                 
-                output = input.rsplit('.',1)[0]
+                output = filepath.rsplit('.',1)[0]
                 output = output+'_IA.mkv'     
             
                 try: #MSG EDIT AND EDIT
@@ -94,8 +94,6 @@ async def add_task(message):
                     os.remove(f'progress-{FT}.txt')
                 except Exception as e: 
                     LOG.info(f'Error while removing files\n'+e)      
-            
-            
            
                 try: #MSG DELETE
                     await msg.delete() 
