@@ -40,7 +40,7 @@ async def ffmpeg_progress(cmd, file, progress, now, send_msg, ps_name,log=None):
         pass
     proce = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
     while proce.returncode != 0:
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
         with open(progress, "r+") as fil:
             text = fil.read()
             frames = re.findall("frame=(\\d+)", text)
