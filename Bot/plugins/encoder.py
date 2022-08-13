@@ -28,6 +28,7 @@ async def add_task(message):
             
             if check_resolution == 'auto':
                 cmd = ffmpeg_auto_settings(message.from_user.id, filepath, FT)
+                await msg.edit_text('**Encoding...**')
                 try:
                     lq = await ffmpeg_progress(cmd[0], filepath,f'progress-{FT}.txt',FT, msg, '**Encoding Started 480p**\n\n')
                 except Exception as e:
@@ -54,14 +55,6 @@ async def add_task(message):
                     await hq.copy(FILES_CHANNEL)
                 except Exception as e: 
                     LOG.info(f'Error while file copy\n'+e)
-                try: #FILE DELETE
-                    os.remove(filepath)
-                    os.remove(output+'480p.mkv')
-                    os.remove(output+'720p.mkv')
-                    os.remove(output+'1080p.mkv')
-                    os.remove(f'progress-{FT}.txt')
-                except Exception as e: 
-                    LOG.info(f'Error while removing files\n'+e)  
             else:
                 cmd = ffmpeg_settings(message.from_user.id, filepath, FT)  
                 await msg.edit_text('**Encoding...**')
@@ -83,11 +76,10 @@ async def add_task(message):
                 except Exception as e: 
                     LOG.info(f'Error while file copy\n'+e)
             
-                try: #FILE DELETE
-                    os.remove(filepath)
-                    os.remove(output)
-                    os.remove(f'progress-{FT}.txt')
-                except Exception as e: 
+            try: #FILE DELETE
+                os.remove('downloads')
+                os.remove(f'progress-{FT}.txt')
+            except Exception as e: 
                     LOG.info(f'Error while removing files\n'+e)  
            
             try: #MSG DELETE
