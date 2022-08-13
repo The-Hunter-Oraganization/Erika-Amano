@@ -28,6 +28,7 @@ async def add_task(message):
             print(check_resolution)
             if check_resolution == 'auto':
                 cmd = ffmpeg_auto_settings(message.from_user.id, filepath, FT)
+                print(cmd)
                 await msg.edit_text('**Encoding...**')
                 try:
                     lq = await ffmpeg_progress(cmd[0], filepath,f'progress-{FT}.txt',FT, msg, '**Encoding Started 480p**\n\n')
@@ -55,6 +56,18 @@ async def add_task(message):
                     await hq.copy(FILES_CHANNEL)
                 except Exception as e: 
                     LOG.info(f'Error while file copy\n'+e)
+                    
+                try: #FILE DELETE
+                    os.rmdir('downloads')
+                    os.remove(f'progress-{FT}.txt')
+                except Exception as e: 
+                    LOG.info(f'Error while removing files\n'+e)      
+            
+                try: #MSG DELETE
+                    await msg.delete() 
+                except:
+                    pass   
+                    
             else:
                 cmd = ffmpeg_settings(message.from_user.id, filepath, FT)  
                 await msg.edit_text('**Encoding...**')
@@ -75,17 +88,19 @@ async def add_task(message):
                     await file.copy(FILES_CHANNEL)
                 except Exception as e: 
                     LOG.info(f'Error while file copy\n'+e)
+                
+                try: #FILE DELETE
+                    os.rmdir('downloads')
+                    os.remove(f'progress-{FT}.txt')
+                except Exception as e: 
+                    LOG.info(f'Error while removing files\n'+e)      
             
-            try: #FILE DELETE
-                os.remove('downloads')
-                os.remove(f'progress-{FT}.txt')
-            except Exception as e: 
-                    LOG.info(f'Error while removing files\n'+e)  
+            
            
-            try: #MSG DELETE
-                await msg.delete() 
-            except:
-                pass       
+                try: #MSG DELETE
+                    await msg.delete() 
+                except:
+                    pass       
                        
         except Exception as e: 
             LOG.info(f'Error while line 56\n'+e)    
