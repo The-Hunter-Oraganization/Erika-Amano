@@ -59,7 +59,10 @@ async def add_task(message):
                     LOG.info(f'Error while file copy\n'+e)
                     
                 try: #FILE DELETE
-                    os.rmdir('downloads')
+                    os.remove(filepath)
+                    os.remove(output+"480p".mkv)
+                    os.remove(output+"720p".mkv)
+                    os.remove(output+"1080p".mkv)
                     os.remove(f'progress-{FT}.txt')
                 except Exception as e: 
                     LOG.info(f'Error while removing files\n'+e)      
@@ -91,7 +94,8 @@ async def add_task(message):
                     LOG.info(f'Error while file copy\n'+e)
                 
                 try: #FILE DELETE
-                    os.rmdir('downloads')
+                    os.remove(filepath)
+                    os.remove(output)
                     os.remove(f'progress-{FT}.txt')
                 except Exception as e: 
                     LOG.info(f'Error while removing files\n'+e)      
@@ -109,6 +113,7 @@ async def add_task(message):
     try:
         await on_task_complete()   
     except Exception as e: 
+       # await on_task_complete()   
         LOG.info(f'Error while task complete\n'+e) 
        
 
