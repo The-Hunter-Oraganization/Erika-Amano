@@ -9,7 +9,7 @@ BUTTONS_RESOLUTIONS = IKM(
     [
         [
             IKB("ᴅᴇᴠᴇʟᴏᴘᴇʀ", 'answer_about_dev'),
-            IKB('ʜᴇʟᴘ', 'answer_help')
+            IKB('ʜᴇʟᴘ', 'answer_help'),
         ],
         [
             IKB('sᴇᴛ 𝟺𝟾𝟶ᴘ', 'settings_encoding_480p'),
@@ -51,6 +51,37 @@ BUTTONS_PRESET = IKM(
         [
             IKB("ᴅᴇᴠᴇʟᴏᴘᴇʀ", 'answer_about_dev'),
             IKB('ʜᴇʟᴘ', 'answer_help')
+        ],
+        [
+            IKB('sᴇᴛ ғᴀsᴛ', 'settings_encoding_fast'),
+            IKB('ѕєт sʟᴏᴡ', 'settings_encoding_slow'),
+        ]
+    ]
+)
+
+BUTTONS_AUTO = IKM(
+    [
+        [
+            IKB('sᴇᴛ ᴀᴜᴛᴏ ᴍᴏᴅᴇ', 'settings_encoding_auto'),
+            IKB("ᴅᴇᴠᴇʟᴏᴘᴇʀ", 'answer_about_dev'),
+        ],
+        [
+            IKB('sᴇᴛ ᴀᴜᴅɪᴏ sᴇᴛᴛɪɴɢs', 'blankquery'),
+        ],
+        [
+            IKB('sᴇᴛ ᴀᴀᴄ', 'settings_encoding_aac'),
+            IKB('ѕєт ᴏᴘᴜs', 'settings_encoding_opus'),
+            IKB('sᴇᴛ ʟɪʙᴏᴘᴜs', 'settings_encoding_libopus'),
+        ], 
+        [
+            IKB('sᴇᴛ ᴠɪᴅᴇᴏ ᴄᴏᴅᴇᴄ', 'blankquery'),
+        ],
+        [
+            IKB('sᴇᴛ x𝟸𝟼𝟺', 'settings_encoding_x264'),
+            IKB('ѕєт x𝟸𝟼𝟻', 'settings_encoding_x265'),
+        ], 
+        [
+            IKB('sᴇᴛ ᴠɪᴅᴇᴏ ᴘʀᴇsᴇᴛ sᴇᴛᴛɪɴɢs', 'blankquery'),
         ],
         [
             IKB('sᴇᴛ ғᴀsᴛ', 'settings_encoding_fast'),
@@ -179,7 +210,10 @@ async def settings_callback(client:Client, callback_query):
         await callback_query.message.edit('ᴜᴘᴅᴀᴛᴇᴅ ᴠɪᴅᴇᴏ ʀᴇsᴏʟᴜᴛɪᴏɴ ᴛᴏ 720p',reply_markup=BUTTONS_RESOLUTIONS)  
     elif 'encoding_1080p' in callback_query.data:
         update_resolution_settings(callback_query.from_user.id, '1080p')
-        await callback_query.message.edit('ᴜᴘᴅᴀᴛᴇᴅ ᴠɪᴅᴇᴏ ʀᴇsᴏʟᴜᴛɪᴏɴ ᴛᴏ 1080p',reply_markup=BUTTONS_RESOLUTIONS)    
+        await callback_query.message.edit('ᴜᴘᴅᴀᴛᴇᴅ ᴠɪᴅᴇᴏ ʀᴇsᴏʟᴜᴛɪᴏɴ ᴛᴏ 1080p',reply_markup=BUTTONS_RESOLUTIONS)
+    elif 'encoding_auto' in callback_query.data:   
+        update_resolution_settings(callback_query.from_user.id, 'auto')
+        await callback_query.message.edit('ᴜᴘᴅᴀᴛᴇᴅ ᴠɪᴅᴇᴏ ʀᴇsᴏʟᴜᴛɪᴏɴ ᴛᴏ ᴀʟʟ',reply_markup=BUTTONS_AUTO)            
     elif 'encoding_aac' in callback_query.data:
         update_audio_type_mdb(callback_query.from_user.id, 'aac')
         await callback_query.message.edit('ᴜᴘᴅᴀᴛᴇᴅ ᴀᴜᴅɪᴏ ᴛʏᴘᴇ ᴛᴏ ᴀᴀᴄ', reply_markup=BUTTONS_AUDIO)  
@@ -212,6 +246,10 @@ async def settings_callback(client:Client, callback_query):
         crf_plus = update_crf(callback_query.from_user.id, update)
         await callback_query.message.edit(f'ᴜᴘᴅᴀᴛᴇᴅ ᴠɪᴅᴇᴏ ᴄʀғ ᴛᴏ {update}', reply_markup=BUTTONS_CRF)    
             
+
+@Client.on_callback_query(filters.regex('blankquery'))
+async def blankcallback_answer(client:Client, callback_query): 
+    await callback_query.answer('Oops Empty')
         
 @Client.on_callback_query(filters.regex('answer'))
 async def callback_answer(client:Client, callback_query): 
@@ -242,12 +280,25 @@ async def callback_answer(client:Client, callback_query):
     elif 'preset' in callback_query.data:  
         text = '**To change the video preset of this bot, use the buttons given below**.\n\n'
         text += f'**Your current video preset is** : `{check_preset_settings(callback_query.from_user.id)}`\n\n**[Created By Soheru](https://t.me/aboutmesk)**'  
-        await callback_query.message.edit(text, reply_markup=BUTTONS_PRESET)       
+        await callback_query.message.edit(text, reply_markup=BUTTONS_PRESET) 
+    elif 'what_is_auto' in callback_query.data:
+        codec = check_vcodec_settings(callback_query.from_user.id)
+        text="**In this mode bot will encode files in three resolution**\n\n"
+        if codec == 'x264':
+            text += "• **480p** - `x264 - CRF - 28, Audio Bitrate - 64k`\n"
+            text += "• **720p** - `x264 - CRF - 27, Audio Bitrate - 128k`\n"
+            text += "• **1080p** - `x264 - CRF - 26, Audio Bitrate - 256k`\n"
+        elif codec == 'x265':
+            text += "• **480p** - `x265 - CRF - 26, Audio Bitrate - 64k`\n"
+            text += "• **720p** - `x265 - CRF - 23, Audio Bitrate - 128k`\n"
+            text += "• **1080p** - `x265 - CRF - 24, Audio Bitrate - 256k`\n"   
+            await callback_query.message.edit(text,reply_markup=BUTTONS_AUTO) 
     elif 'about_dev' in callback_query.data:
         text = f'Hello `{callback_query.from_user.first_name}`,\n\n'
         text += "I'm Sohail\nTo connect with me, Check Below Buttons"
         await callback_query.message.edit(text,reply_markup=BUTTONS_DEV)    
-        
+    await callback_query.answer('Your Query Processed.')   
+              
 @Client.on_message(filters.command(['start', 'help'], prefixes=TRIGGERS))
 async def start_(client: Client, message: Message):
     
