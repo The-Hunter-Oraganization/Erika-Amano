@@ -63,7 +63,6 @@ async def add_task(message):
                 except Exception as e: 
                     LOG.info(f'Error while removing files\n'+e)  
             else:
-                        
                 cmd = ffmpeg_settings(message.from_user.id, filepath, FT)  
                 await msg.edit_text('**Encoding...**')
                 try:

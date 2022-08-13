@@ -134,6 +134,7 @@ BUTTONS_HELP = IKM(
         [
            IKB('ᴠᴄᴏᴅᴇᴄ', 'answer_vcodec'),
            IKB('ᴘʀᴇsᴇᴛ', 'answer_preset'), 
+           IKB('ᴀᴜᴛᴏ ᴍᴏᴅᴇ', 'answer_what_is_auto')
         ]
     ]
 )
