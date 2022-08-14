@@ -85,7 +85,7 @@ async def add_task(message):
             
                 try: #MSG EDIT AND EDIT
                     await msg.edit(f'**Encoding Completed')   
-                    file =  await msg.reply_document(output)  
+                    file =  await msg.reply_document(output, caption=f"**{check_resolution}**")  
                 except Exception as e: 
                     LOG.info(f'Error while file sending\n'+e)  
                 try:
