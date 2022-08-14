@@ -144,8 +144,10 @@ async def encoder_process(encoder, message):
         text= "You're not authorized to use this bot. Request Admins to approve you."
         await encoder.send_message(message.chat.id, text, reply_markup=IKM([[IKB('ʀᴇǫᴜᴇsᴛ', f'users_request-{message.from_user.id}')]]))
         return
+    msf = await message.reply('Added to the queue')
     encoder_is_on.append(message)
     if len(encoder_is_on) == 1:
+        await msf.delete()
         await add_task(message)           
                          
                    
