@@ -1,5 +1,5 @@
 {
-    "name": "Erika Amano",
+  "name": "Erika Amano",
     "description": "Simple Telegram Video Encoder Bot.",
     "repository": "https://github.com/The-Hunter-Oraganization/Erika-Amano",
     "logo": "https://telegra.ph/file/7e3c7f4f70272c6e59c52.jpg",
@@ -11,28 +11,27 @@
         "size": "free"
       }
     },
-    "env": {
-      "API_ID": {
-        "description": "App API_ID from https://my.telegram.org"
-      },
-      "APP_HASH": {
-        "description": "App APP_HASH from https://my.telegram.org"
-      },
-      "BOT_TOKEN": {
-        "description": "Bot token from https://t.me/BotFather",
-        "required": true
-      },
-      "OWNER_ID": {
-        "description": "Your Telegram ID",
-        "required": true
-      },
-      "MONGO_DB": {
-        "description": "get from cloud.mongodb.com",
-        "required": true
-      },
-      "FILES_CHANNEL": {
-        "description": "Files Channel ID",
-        "required": false
-      }
+  "env": {
+    "BOT_TOKEN": {
+      "description": "Get it from @BotFather"
     },
+    "API_ID": {
+      "description": "Your API_ID, Get it from https://my.telegram.org/apps"
+    },
+    "APP_HASH": {
+      "description": "Your API_HASH, Get it from https://my.telegram.org/apps"
+    },
+    "OWNER_ID": {
+      "description": "Your Telegram ID",
+      "value": "9415241"
+    },
+    "MONGO_DB": {
+      "description": "get from cloud.mongodb.com",
+      "value": ""
+    },
+    "FILES_CHANNEL": {
+      "description": "Files Channel ID",
+      "required": false
+    }
+  }
 }
