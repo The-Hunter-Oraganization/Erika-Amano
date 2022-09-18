@@ -33,7 +33,7 @@ async def add_task(message):
             except Exception as e:
                 LOG.info(f'ERror while ffmpeg progress\n' +e)  
             output = filepath.rsplit('.',1)[0]
-            output = output+'_IA.mkv'     
+            output = output.rsplit('/', 1)[1]+'_IA.mkv'     
             file_name = filepath.rsplit('/', 1)
             try: #MSG EDIT AND EDIT
                 await msg.edit(f'**Encoding Completed')   
