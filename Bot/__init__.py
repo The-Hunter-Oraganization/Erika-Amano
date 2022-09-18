@@ -1,9 +1,11 @@
 import os, sys, logging
 from pyrogram import Client 
 
-
+if os.path.exists('error.log'):
+    os.remove('error.log')
+        
 #<-----------LOGGING------------>
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename='error.log')
 LOG = logging.getLogger("Bot by @soheru")
 LOG.setLevel(level=logging.INFO)
 #<-----------Variables-------------->
