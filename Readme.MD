@@ -36,6 +36,7 @@ We made this bot for video encoding purpose of telegram files because telegram p
 ### Local Deploy
 
 ```
+[-] apt install python3 python3-pip ffmpeg -y
 [-] git clone your_fork_url
 [-] cd ErikaAmano 
 [-] pip3 install -r requirements.txt && sudo apt install ffmpeg python3 python3-pip -y
