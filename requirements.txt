@@ -1,6 +1,6 @@
 pyrogram==1.4.16
 tgcrypto
 pymongo
-ethon==0.1.2
+ethon==0.1.4
 dnspython
 asyncio
