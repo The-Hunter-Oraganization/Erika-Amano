@@ -1,4 +1,7 @@
 import time, math, asyncio
+from Bot import encoder,LOG
+from pyrogram.enums import ParseMode
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, User
 
 PROGRESS = """
 • {0} of {1}
@@ -28,14 +31,15 @@ async def progress_for_pyrogram(current, total, ud_type, message, start):
             estimated_total_time if estimated_total_time != '' else "Calculating"
         )
         try:
-            await message.edit_text(
+            await encoder.edit_message_text(chat_id=message.chat.id,message_id=message.id,
                 text="{}\n{}".format(
                     ud_type,
                     tmp
                 ),
-                parse_mode='markdown'
+                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Owner", url = 'https://t.me/sohailkhan_indianime')]]) #instead of reply_markup u can use parse_mode=ParseMode.MARKDOWN
             )
-        except:
+        except Exception as e:
+            LOG.error(f'Senpai Error: {e}')            
             pass
         await asyncio.sleep(5)
 
@@ -62,7 +66,3 @@ def TimeFormatter(seconds: float) -> str:
         ((str(minutes) + "m, ") if minutes else "") + \
         ((str(seconds) + "s, ") if seconds else "")
     return tmp[:-2]
-
-
-
-
