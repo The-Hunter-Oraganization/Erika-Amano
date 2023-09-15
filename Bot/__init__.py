@@ -19,7 +19,7 @@ MONGO_DB = os.environ.get("MONGO_DB", 'your mongodb') #MONGO DB FOR ANIME DATA
 FILES_CHANNEL = os.environ.get("FILES_CHANNEL", -100456789013)
 BOT_NAME = os.environ.get('BOT_NAME', 'Soheru')
 #<-----------Variables For 4GB Support-------------->
-SESSION_STRING = os.environ.get("SESSION_STRING",'')
+SESSION_STRING = os.environ.get("SESSION_STRING",'None')  #Replace None With String Session
 #<---------------Connecting-------------->
 if BOT_TOKEN is not None:
     try:
@@ -30,9 +30,9 @@ if BOT_TOKEN is not None:
         sys.exit()       
 #<---------------4GB Connecting-------------->
 
-if SESSION_STRING is not None:
+if SESSION_STRING != "None":
     try:
-        ubot = Client("Chizuru", session_string=SESSION_STRING, api_id=API_ID, api_hash=API_HASH, plugins=plugins,max_concurrent_transmissions = 10)
+        ubot = Client("AutoEncoder", session_string=SESSION_STRING, api_id=API_ID, api_hash=API_HASH, plugins=plugins)
         LOGS.info("❤️ 4GB String Session Connected")
     except:
         LOGS.info('😞 Error While Connecting To String Session')    
