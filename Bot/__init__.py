@@ -16,10 +16,10 @@ API_ID = int(os.environ.get('API_ID', 456789)) #Telgram Api id
 APP_HASH = os.environ.get('APP_HASH', 'your api id')# Telgram App hash  
 OWNER_ID = int(os.environ.get('OWNER_ID', 953362604))
 MONGO_DB = os.environ.get("MONGO_DB", 'your mongodb') #MONGO DB FOR ANIME DATA
-FILES_CHANNEL = os.environ.get("FILES_CHANNEL", -100456789013)
+FILES_CHANNEL = os.environ.get("FILES_CHANNEL", -100456789013)    # Must Fill This ,Add Bot As Admin In Log Channel
 BOT_NAME = os.environ.get('BOT_NAME', 'Soheru')
-#<-----------Variables For 4GB Support-------------->
-SESSION_STRING = os.environ.get("SESSION_STRING",'None')  #Replace None With String Session
+#<-----------Variables For 4GB Support (Optional)-------------->
+SESSION_STRING = os.environ.get("SESSION_STRING",'None')  #Replace None With String Session   Your String Session Account Must Be Present In Log Channel
 ubot = None  # Don't Touch This
 #<---------------Connecting-------------->
 if BOT_TOKEN is not None:
