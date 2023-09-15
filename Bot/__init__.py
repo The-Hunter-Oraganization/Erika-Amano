@@ -29,11 +29,14 @@ if BOT_TOKEN is not None:
         LOG.warn(f'😞 Error While Connecting To Bot\nCheck Errors: {e}')
         sys.exit()       
 #<---------------4GB Connecting-------------->
-
-if SESSION_STRING != "None":
-    try:
-        ubot = Client("AutoEncoder", session_string=SESSION_STRING, api_id=API_ID, api_hash=API_HASH, plugins=plugins)
-        LOGS.info("❤️ 4GB String Session Connected")
-    except:
-        LOGS.info('😞 Error While Connecting To String Session')    
-        sys.exit()   
+def create_ubot():
+    global SESSION_STRING
+    if SESSION_STRING != "None":
+        try:
+            ubot = Client("AutoEncoder", session_string=SESSION_STRING, api_id=API_ID, api_hash=API_HASH, plugins=plugins)
+            LOGS.info("❤️ 4GB String Session Connected")
+            return ubot
+        except:
+            LOGS.info('😞 Error While Connecting To String Session')    
+            sys.exit()   
+            return None
