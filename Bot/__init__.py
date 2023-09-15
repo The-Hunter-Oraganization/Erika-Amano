@@ -18,6 +18,8 @@ OWNER_ID = int(os.environ.get('OWNER_ID', 953362604))
 MONGO_DB = os.environ.get("MONGO_DB", 'your mongodb') #MONGO DB FOR ANIME DATA
 FILES_CHANNEL = os.environ.get("FILES_CHANNEL", -100456789013)
 BOT_NAME = os.environ.get('BOT_NAME', 'Soheru')
+#<-----------Variables For 4GB Support-------------->
+SESSION_STRING = os.environ.get("SESSION_STRING",'')
 #<---------------Connecting-------------->
 if BOT_TOKEN is not None:
     try:
@@ -26,3 +28,12 @@ if BOT_TOKEN is not None:
     except Exception as e:
         LOG.warn(f'😞 Error While Connecting To Bot\nCheck Errors: {e}')
         sys.exit()       
+#<---------------4GB Connecting-------------->
+
+if SESSION_STRING is not None:
+    try:
+        ubot = Client("Chizuru", session_string=SESSION_STRING, api_id=API_ID, api_hash=API_HASH, plugins=plugins,max_concurrent_transmissions = 10)
+        LOGS.info("❤️ 4GB String Session Connected")
+    except:
+        LOGS.info('😞 Error While Connecting To String Session')    
+        sys.exit()   
