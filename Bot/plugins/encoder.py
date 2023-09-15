@@ -5,13 +5,14 @@ from pyrogram.types import InlineKeyboardMarkup as IKM, InlineKeyboardButton as 
 
 from Bot.plugins.database.mongo_db import check_user_mdb,check_vcodec_settings,update_vcodec_settings,check_preset_settings,update_preset_settings,check_resolution_settings,check_audio_type_mdb, update_audio_type_mdb,update_resolution_settings
 from Bot.utils.decorators import ffmpeg_settings
-from Bot import encoder, OWNER_ID, LOG, FILES_CHANNEL
+from Bot import encoder, OWNER_ID, LOG, FILES_CHANNEL, SESSION_STRING , ubot
 from Bot.utils.progress_pyro import progress_for_pyrogram
 from Bot.utils.ffmpeg import ffmpeg_progress
 
 encoder_is_on = []
 flood = []
 
+    
 async def on_task_complete():
     del encoder_is_on[0]
     if len(encoder_is_on) > 0:
@@ -41,11 +42,15 @@ async def add_task(message):
             file_name = output.rsplit('/', 1)[1].replace('_IA', "")
             try: #MSG EDIT AND EDIT
                 await msg.edit(f'**Encoding Completed')   
-                file =  await msg.reply_document(output, caption=f"**{check_resolution}**", file_name=file_name)  
+                if ubot == None:
+                    file =  await encoder.send_document(chat_id = FILES_CHANNEL, document = output, caption=f"**{check_resolution}**", file_name=file_name)  
+                else:
+                    file =  await ubot.send_document(chat_id = FILES_CHANNEL, document = output, caption=f"**{check_resolution}**", file_name=file_name)  
+                
             except Exception as e: 
                 LOG.info(f'Error while file sending\n'+e)  
             try:
-                await file.copy(FILES_CHANNEL)
+                await encoder.copy_message(chat_id = msg.chat.id, from_chat_id = FILES_CHANNEL, message_id= file.id)                
             except Exception as e: 
                 LOG.info(f'Error while file copy\n'+e)
                 
