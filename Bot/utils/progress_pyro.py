@@ -1,68 +1,78 @@
-import time, math, asyncio
-from Bot import encoder,LOG
-from pyrogram.enums import ParseMode
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, User
+import time
+import math
+import asyncio
 
-PROGRESS = """
-• {0} of {1}
-• Speed: {2}
-• ETA: {3}
+from Bot import LOG
+
+PROGRESS_TEMPLATE = """
+• {current} of {total}
+• Speed: {speed}
+• ETA: {eta}
 """
 
-async def progress_for_pyrogram(current, total, ud_type, message, start):
-    now = time.time()
-    diff = now - start
-    if round(diff % 10.00) == 0 or current == total:
-        percentage = current * 100 / total
-        speed = current / diff
-        elapsed_time = round(diff)
-        time_to_completion = round((total - current) / speed)
-        estimated_total_time = elapsed_time + time_to_completion
-        elapsed_time = TimeFormatter(seconds=elapsed_time)
-        estimated_total_time = TimeFormatter(seconds=estimated_total_time)
-        progress = "[{0}{1}]".format(
-            ''.join(["█" for i in range(math.floor(percentage / 10))]),
-            ''.join(["░" for i in range(10 - math.floor(percentage / 10))])
-        )
-        tmp = progress + PROGRESS.format(
-            humanbytes(current),
-            humanbytes(total),
-            humanbytes(speed) + "/s",
-            estimated_total_time if estimated_total_time != '' else "Calculating"
-        )
-        try:
-            await encoder.edit_message_text(chat_id=message.chat.id,message_id=message.id,
-                text="{}\n{}".format(
-                    ud_type,
-                    tmp
-                ),
-                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Owner", url = 'https://t.me/sohailkhan_indianime')]]) #instead of reply_markup u can use parse_mode=ParseMode.MARKDOWN
-            )
-        except Exception as e:
-            LOG.error(f'Senpai Error: {e}')            
-            pass
-        await asyncio.sleep(5)
 
-def humanbytes(size):
-    """ humanize size """
+def humanbytes(size) -> str:
     if not size:
-        return ""
+        return "0 B"
     power = 1024
-    t_n = 0
-    power_dict = {0: ' ', 1: 'K', 2: 'M', 3: 'G', 4: 'T'}
-    while size > power:
+    n = 0
+    units = {0: " ", 1: "K", 2: "M", 3: "G", 4: "T"}
+    while size > power and n < 4:
         size /= power
-        t_n += 1
-    return "{:.2f} {}B".format(size, power_dict[t_n])
+        n += 1
+    return f"{size:.2f} {units[n]}B"
 
 
-def TimeFormatter(seconds: float) -> str:
-    """ humanize time """
+def time_formatter(seconds: float) -> str:
     minutes, seconds = divmod(int(seconds), 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    tmp = ((str(days) + "d, ") if days else "") + \
-        ((str(hours) + "h, ") if hours else "") + \
-        ((str(minutes) + "m, ") if minutes else "") + \
-        ((str(seconds) + "s, ") if seconds else "")
-    return tmp[:-2]
+    parts = []
+    if days:
+        parts.append(f"{days}d")
+    if hours:
+        parts.append(f"{hours}h")
+    if minutes:
+        parts.append(f"{minutes}m")
+    if seconds:
+        parts.append(f"{seconds}s")
+    return ", ".join(parts) or "0s"
+
+
+async def progress_callback(current: int, total: int, event, status_msg, start_time: float, ud_type: str):
+    """Telethon-compatible upload/download progress callback."""
+    now = time.time()
+    diff = now - start_time
+
+    if diff == 0:
+        return
+
+    # Only update every ~8 seconds to avoid flood
+    if round(diff % 8.0) != 0 and current != total:
+        return
+
+    percentage = current * 100 / total
+    speed = current / diff
+    time_to_completion = round((total - current) / speed) if speed > 0 else 0
+
+    filled = math.floor(percentage / 10)
+    progress_bar = "█" * filled + "░" * (10 - filled)
+
+    text = (
+        f"{ud_type}\n"
+        f"[{progress_bar}]\n"
+        + PROGRESS_TEMPLATE.format(
+            current=humanbytes(current),
+            total=humanbytes(total),
+            speed=humanbytes(speed) + "/s",
+            eta=time_formatter(time_to_completion) if time_to_completion else "Calculating",
+        )
+    )
+
+    try:
+        await status_msg.edit(text)
+    except Exception as e:
+        LOG.warning(f"Progress edit error: {e}")
+
+    if current != total:
+        await asyncio.sleep(1)

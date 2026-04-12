@@ -3,7 +3,7 @@
     "description": "Simple Telegram Video Encoder Bot.",
     "repository": "https://github.com/The-Hunter-Oraganization/Erika-Amano",
     "logo": "https://telegra.ph/file/7e3c7f4f70272c6e59c52.jpg",
-    "keywords": ["python", "pyrogram", "telegram", "compressor-bot"],
+    "keywords": ["python", "telethon", "telegram", "encoder-bot"],
     "image": "heroku/python",
     "formation": {
       "worker": {
@@ -18,7 +18,7 @@
     "API_ID": {
       "description": "Your API_ID, Get it from https://my.telegram.org/apps"
     },
-    "APP_HASH": {
+    "API_HASH": {
       "description": "Your API_HASH, Get it from https://my.telegram.org/apps"
     },
     "OWNER_ID": {
@@ -31,6 +31,10 @@
     },
     "FILES_CHANNEL": {
       "description": "Files Channel ID",
+      "required": false
+    },
+    "SESSION_STRING": {
+      "description": "Telethon String Session for 4GB+ file uploads (optional)",
       "required": false
     }
   }

@@ -1,125 +1,107 @@
-import io, sys, traceback, os, re, subprocess
-from Bot import OWNER_ID, encoder as indi, TRIGGERS as trg
-from datetime import datetime as dt
-from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant
+import io
+import sys
+import os
+import re
+import traceback
+import subprocess
+import asyncio
 
-@Client.on_message(filters.user(OWNER_ID) & filters.command('eval', prefixes=trg))
-async def eval(client: indi, message: Message):
-    status_message = await message.reply_text("Processing ...")
-    cmd = message.text.split(" ", maxsplit=1)[1]
-    reply_to_ = message
-    if message.reply_to_message:
-        reply_to_ = message.reply_to_message
+from telethon import events
+
+from Bot import bot, OWNER_ID, LOG
+
+
+# ─── /eval - Execute Python code ───
+
+@bot.on(events.NewMessage(pattern=r"^[/!]eval\s+", from_users=OWNER_ID))
+async def eval_handler(event):
+    cmd = event.raw_text.split(None, 1)[1]
+    status_msg = await event.reply("**Processing...**")
+
+    reply_to = event.reply_to_msg_id or event.id
+
     old_stderr = sys.stderr
     old_stdout = sys.stdout
     redirected_output = sys.stdout = io.StringIO()
     redirected_error = sys.stderr = io.StringIO()
+
     stdout, stderr, exc = None, None, None
     try:
-        await aexec(cmd, client, message)
+        await _aexec(cmd, bot, event)
     except Exception:
         exc = traceback.format_exc()
+
     stdout = redirected_output.getvalue()
     stderr = redirected_error.getvalue()
     sys.stdout = old_stdout
     sys.stderr = old_stderr
-    evaluation = ""
-    if exc:
-        evaluation = exc
-    elif stderr:
-        evaluation = stderr
-    elif stdout:
-        evaluation = stdout
-    else:
-        evaluation = "Success"
-    final_output = "<b>EVAL</b>: "
-    final_output += f"<code>{cmd}</code>\n\n"
-    final_output += "<b>OUTPUT</b>:\n"
-    final_output += f"<code>{evaluation.strip()}</code> \n"
+
+    evaluation = exc or stderr or stdout or "Success"
+
+    final_output = f"**EVAL:** `{cmd}`\n\n**OUTPUT:**\n`{evaluation.strip()}`"
+
     if len(final_output) > 4096:
-        with io.BytesIO(str.encode(final_output)) as out_file:
+        with io.BytesIO(final_output.encode()) as out_file:
             out_file.name = "eval.txt"
-            await reply_to_.reply_document(
-                document=out_file, caption=cmd, disable_notification=True
+            await bot.send_file(
+                event.chat_id,
+                out_file,
+                caption=f"`{cmd[:100]}`",
+                reply_to=reply_to,
             )
     else:
-        await reply_to_.reply_text(final_output)
-    await status_message.delete()
+        await event.respond(final_output, reply_to=reply_to)
+
+    await status_msg.delete()
 
 
-async def aexec(code, client, message):
+async def _aexec(code, client, event):
     exec(
-        "async def __aexec(client, message): "
-        + "".join(f"\n {l_}" for l_ in code.split("\n"))
+        "async def __aexec(client, event): "
+        + "".join(f"\n {line}" for line in code.split("\n"))
     )
-    return await locals()["__aexec"](client, message)
-    
-@Client.on_message(filters.user(OWNER_ID) & filters.command("term", prefixes=trg))
-async def terminal(client: indi, message: Message):
-    if len(message.text.split()) == 1:
-        await message.reply_text("Usage: `/term echo owo`")
+    return await locals()["__aexec"](client, event)
+
+
+# ─── /term - Execute shell commands ───
+
+@bot.on(events.NewMessage(pattern=r"^[/!]term\s+", from_users=OWNER_ID))
+async def terminal_handler(event):
+    cmd_text = event.raw_text.split(None, 1)
+    if len(cmd_text) < 2:
+        await event.reply("**Usage:** `/term echo hello`")
         return
-    args = message.text.split(None, 1)
-    teks = args[1]
-    if "\n" in teks:
-        code = teks.split("\n")
-        output = ""
-        for x in code:
-            shell = re.split(""" (?=(?:[^'"]|'[^']*'|"[^"]*")*$)""", x)
-            try:
-                process = subprocess.Popen(
-                    shell, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                )
-            except Exception as err:
-                print(err)
-                await message.reply_text(
-                    """
-**Error:**
-```{}```
-""".format(
-                        err
-                    ),
-                    parse_mode="markdown",
-                )
-            output += "**{}**\n".format(code)
-            output += process.stdout.read()[:-1].decode("utf-8")
-            output += "\n"
+
+    command = cmd_text[1]
+
+    try:
+        process = await asyncio.create_subprocess_shell(
+            command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=120)
+        output = stdout.decode("utf-8", errors="replace").strip()
+        error = stderr.decode("utf-8", errors="replace").strip()
+
+        result = ""
+        if output:
+            result += f"**stdout:**\n```\n{output}\n```\n"
+        if error:
+            result += f"**stderr:**\n```\n{error}\n```\n"
+        if not result:
+            result = "**No output.**"
+
+    except asyncio.TimeoutError:
+        result = "**Error:** Command timed out (120s)."
+    except Exception as e:
+        result = f"**Error:**\n```\n{traceback.format_exc()}\n```"
+
+    if len(result) > 4096:
+        filename = "output.txt"
+        with open(filename, "w") as f:
+            f.write(result)
+        await bot.send_file(event.chat_id, filename, reply_to=event.id, caption="`Output`")
+        os.remove(filename)
     else:
-        shell = re.split(""" (?=(?:[^'"]|'[^']*'|"[^"]*")*$)""", teks)
-        for a in range(len(shell)):
-            shell[a] = shell[a].replace('"', "")
-        try:
-            process = subprocess.Popen(
-                shell, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            )
-        except Exception as err:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            errors = traceback.format_exception(
-                etype=exc_type, value=exc_obj, tb=exc_tb
-            )
-            await message.reply_text(
-                """**Error:**\n```{}```""".format("".join(errors)),
-                parse_mode="markdown",
-            )
-            return
-        output = process.stdout.read()[:-1].decode("utf-8")
-    if str(output) == "\n":
-        output = None
-    if output:
-        if len(output) > 4096:
-            filename = "output.txt"
-            with open(filename, "w+") as file:
-                file.write(output)
-            await client.send_document(
-                message.chat.id,
-                filename,
-                reply_to_message_id=message.message_id,
-                caption="`Output file`",
-            )
-            os.remove(filename)
-            return
-        await message.reply_text(f"**Output:**\n```{output}```", parse_mode="markdown")
-    else:
-        await message.reply_text("**Output:**\n`No Output`")    
+        await event.respond(result)

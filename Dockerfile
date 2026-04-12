@@ -1,8 +1,9 @@
-FROM python:3.9.2-slim-buster
+FROM python:3.11-slim-bookworm
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Asia/Kolkata"
-RUN apt -qq update && apt -qq install -y ffmpeg mediainfo build-essential
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg mediainfo && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-RUN python3 -m pip install --upgrade pip 
-RUN pip3 install -r requirements.txt
-CMD ["bash","run.sh"]
+CMD ["bash", "run.sh"]

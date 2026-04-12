@@ -1,0 +1,19 @@
+# Environment
+.env
+*.session
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Downloads & temp files
+downloads/
+*.log
+progress-*.txt
+
+# IDE
+.vscode/
+.idea/
